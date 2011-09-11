@@ -1,0 +1,9 @@
+(name let)
+
+(trigger
+    (tab let))
+
+(only-in source.arc)
+
+(snippet [(let %{1="var"} %{2="value"}
+     %{0})])

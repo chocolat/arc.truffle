@@ -1,0 +1,9 @@
+(name if)
+
+(trigger
+    (tab if))
+
+(only-in source.arc)
+
+(snippet [(if %{2="(%{1="condition"})"} %{4="(%{3="then"})"}
+    %{6="(%{5="else"})"})])

@@ -1,0 +1,8 @@
+(name Line-result)
+
+(trigger
+    (tab ;))
+
+(only-in source.arc)
+
+(snippet [; `echo $TM_CURRENT_LINE | arc | tail -n 2 | head -n 1`])

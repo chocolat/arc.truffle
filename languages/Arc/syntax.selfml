@@ -1,0 +1,556 @@
+(root source.arc
+    (include @comment)
+    (include @sexp)
+    (include @string)
+    (include @language-functions)
+    (include @quote)
+    (include @illegal))
+
+(collection quote
+    (zone
+        (subzones
+            (zone constant.other.symbol.arc
+                (match
+                    (regex [(?x)
+						(')\s*
+						([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*)
+					]
+                        (1 punctuation.section.quoted.symbol.arc))))
+            (zone constant.other.empty-list.arc
+                (match
+                    (regex [(?x)
+						(')\s*
+						((\()\s*(\)))
+					]
+                        (3 punctuation.section.expression.begin.arc)
+                        (4 punctuation.section.expression.end.arc)
+                        (1 punctuation.section.quoted.empty-list.arc)
+                        (2 meta.expression.arc))))
+            (zone string.other.quoted-object.arc
+                (start
+                    (regex [(')\s*]
+                        (1 punctuation.section.quoted.arc)))
+                (end
+                    (regex [(?=[\s()])|(?<=\n)]))
+                (subzones
+                    (include @quoted))))))
+
+(collection illegal
+    (zone invalid.illegal.parenthesis.arc
+        (match
+            (regex [[()]]))))
+
+(collection quoted
+    (include @string)
+    (zone meta.expression.arc
+        (start
+            (regex [(\()]
+                (1 punctuation.section.expression.begin.arc)))
+        (end
+            (regex [(\))]
+                (1 punctuation.section.expression.end.arc)))
+        (subzones
+            (include @quoted)))
+    (include @quote)
+    (include @illegal))
+
+(collection string
+    (zone string.quoted.double.arc
+        (start
+            (regex [(")]
+                (1 punctuation.definition.string.begin.arc)))
+        (end
+            (regex [(")]
+                (1 punctuation.definition.string.end.arc)))
+        (subzones
+            (zone constant.character.escape.arc
+                (match
+                    (regex \\.))))))
+
+(collection quote-sexp
+    (zone
+        (inner-identifier string.other.quote.arc)
+        (start
+            (regex [(?<=\()\s*(quote)\b\s*]
+                (1 keyword.control.quote.arc)))
+        (end
+            (regex [(?=[\s)])|(?<=\n)]))
+        (subzones
+            (include @quoted))))
+
+(collection language-functions
+    (zone keyword.control.arc
+        (match
+            (regex [(?x)
+						(?<=(\s|\()) # preceded by space or ( 
+						( 
+aand |
+and |
+andf |
+aif |
+carif |
+consif |
+iflet |
+if |
+each |
+for |
+forlen |
+nor |
+or |
+orf |
+case |
+conswhen |
+awhen |
+when |
+while |
+whiler |
+whilet |
+whilec |
+with | 
+do |
+do1 |
+repeat |
+unless |
+until 
+						  )
+						(?=(\s|\())])))
+    (zone support.function.boolean-test.arc
+        (match
+            (regex [(?x)
+						(?<=(\s|\()) # preceded by space or (
+						(
+acons | 
+alist | 
+atom | 
+empty | 
+number | 
+odd | 
+even | 
+positive
+						)
+						(?=(\s|\()) # followed by space or (
+					])))
+    (zone support.function.convert-type.arc
+        (match
+            (regex [(?x)
+						(?<=(\s|\()) # preceded by space or (
+						( 
+coerce
+						)
+						(?=(\s|\()) # followed by space or (					
+					])))
+    (zone support.function.with-side-effects.arc
+        (match
+            (regex [(?x)
+						(?<=(\s|\()) # preceded by space or (
+						( 
+\= |
+set |
+cut
+						)
+						(?=(\s|\()) # followed by space or (
+					])))
+    (zone support.function.arithmetic-operators.arc
+        (match
+            (regex [(?x)
+						(?<=(\s|\()) # preceded by space or (
+						( >=?|<=?|[+][+]|[-][-]|[*/+-])
+						(?=(\s|\()) # followed by space or (
+						])))
+    (zone support.function.general.arc
+        (match
+            (regex [(?x)
+						(?<=(\s|\()) # preceded by space or (
+						( 
+abs | 
+accum | 
+addtem | 
+adjoin | 
+afn | 
+after | 
+all | 
+alphadig | 
+alref | 
+annotate | 
+apply | 
+assert | 
+assoc | 
+atend | 
+atlet | 
+atomic | 
+atomic-invoke | 
+atwith | 
+atwiths | 
+avg | 
+bar* | 
+before | 
+best | 
+bestn | 
+bound | 
+break-thread | 
+caar | 
+cache | 
+cadr | 
+call-w/stdin | 
+call-w/stdout | 
+car | 
+caris | 
+let | 
+catch | 
+ccc | 
+cddr | 
+cdr | 
+check | 
+client-ip | 
+close | 
+commonest | 
+compare | 
+complement | 
+compose | 
+cons | 
+copy | 
+count | 
+counts | 
+current-gc-milliseconds | 
+current-process-milliseconds | 
+date | 
+days-since | 
+dead | 
+dedup | 
+defhook | 
+defmemo | 
+defset | 
+deftem | 
+deq | 
+details | 
+dir | 
+dir-exists | 
+disp | 
+dotted | 
+downcase | 
+drain | 
+ellipsize | 
+enq | 
+enq-limit | 
+ensure-dir | 
+ero | 
+err | 
+errsafe | 
+eval | 
+exact | 
+expand-metafn-call | 
+expand= | 
+expand=list | 
+expt | 
+file-exists | 
+fill-table | 
+find | 
+firstn | 
+firstn-that | 
+flat | 
+fromstring | 
+hook | 
+hooks* | 
+hours-since | 
+idfn | 
+in | 
+infile | 
+insert-sorted | 
+inside | 
+insort | 
+insortnew | 
+inst | 
+instring | 
+intersperse | 
+is | 
+isa | 
+isnt | 
+iso | 
+join | 
+jtime | 
+keep | 
+keys | 
+kill-thread | 
+last | 
+len | 
+len< | 
+len> | 
+let | 
+list | 
+listtab | 
+load | 
+load-table | 
+load-tables | 
+loop | 
+macex | 
+macex1 | 
+map | 
+map1 | 
+mappend | 
+maptable | 
+max | 
+median | 
+mem | 
+memo | 
+memtable | 
+merge | 
+mergesort | 
+metafn | 
+min | 
+mismatch | 
+mod | 
+most | 
+msec | 
+multiple | 
+n-of | 
+new-thread | 
+newstring | 
+no | 
+noisy-each | 
+nonwhite | 
+nthcdr | 
+obj | 
+on | 
+on-err | 
+only | 
+ontable | 
+ontree | 
+open-socket | 
+outfile | 
+outstring | 
+pair | 
+parse-format | 
+peekc | 
+pipe-from | 
+point | 
+pop | 
+pos | 
+pr | 
+prall | 
+prf | 
+prn | 
+protect | 
+prs | 
+pull | 
+punc | 
+push | 
+pushnew | 
+qlen | 
+qlist | 
+queue | 
+quit | 
+rand | 
+rand-choice | 
+rand-string | 
+random-elt | 
+range | 
+read | 
+read-table | 
+readall | 
+readb | 
+readc | 
+readfile | 
+readfile1 | 
+readline | 
+readstring1 | 
+reclist | 
+recstring | 
+reduce | 
+reinsert-sorted | 
+rem | 
+rep | 
+rev | 
+rfn | 
+rmfile | 
+rotate | 
+round | 
+roundup | 
+rreduce | 
+safe-load-table | 
+saferead | 
+safeset | 
+save-table | 
+scar | 
+scdr | 
+seconds | 
+setforms | 
+setter | 
+sig | 
+since | 
+single | 
+sleep | 
+socket-accept | 
+some | 
+sort | 
+split | 
+sqrt | 
+sread | 
+sref | 
+ssexpand | 
+ssyntax | 
+stderr | 
+stdin | 
+stdout | 
+string | 
+summing | 
+swap | 
+sym | 
+system | 
+table | 
+tablist | 
+temload | 
+temloadall | 
+templates* | 
+templatize | 
+temread | 
+testify | 
+thread | 
+time | 
+time10 | 
+to-nearest | 
+tostring | 
+trav | 
+tree-subst | 
+treewise | 
+trues | 
+trunc | 
+tuples | 
+type | 
+union | 
+uniq | 
+upcase | 
+vals | 
+w/appendfile | 
+w/bars | 
+w/infile | 
+w/instring | 
+w/outfile | 
+w/outstring | 
+w/socket | 
+w/stdin | 
+w/stdout | 
+w/table | 
+w/uniq | 
+warn | 
+whenlet | 
+wipe | 
+withs | 
+write | 
+write-table | 
+writeb | 
+writec | 
+writefile1 | 
+zap
+						)
+						(?=(\s|\()) # followed by space or (
+					]))))
+
+(collection sexp
+    (zone meta.expression.arc
+        (start
+            (regex [(\()]
+                (1 punctuation.section.expression.begin.arc)))
+        (end
+            (regex [(\))(\n)?]
+                (1 punctuation.section.expression.end.arc)
+                (2 meta.after-expression.arc)))
+        (subzones
+            (include @comment)
+            (zone meta.declaration.procedure.arc
+                (start
+                    (regex [(?x)
+                    (?<=\() # precede by (
+                    (def|mac) # def or mac
+                    \s+
+                    ([^()\s]+) # function name
+                    \s+
+                    (\(? # Arguments list
+                    [^()]*
+                    \)?)
+					]
+                        (3 variable.parameter.function.arc)
+                        (1 keyword.control.arc)
+                        (2 entity.name.function.arc)))
+                (end
+                    (regex [(?=\))]
+                        (3 variable.parameter.function.arc)
+                        (1 keyword.control.arc)
+                        (2 entity.name.function.arc)))
+                (subzones
+                    (include @comment)
+                    (include @sexp)
+                    (include @illegal)))
+            (zone meta.declaration.procedure.arc
+                (start
+                    (regex [(?x)
+						(?<=\() # preceded by (
+						(fn)\s+
+						(\( # opening paren
+						 [^()]*
+						\)) # closing paren
+					]
+                        (1 keyword.control.arc)
+                        (2 variable.parameter.arc)))
+                (end
+                    (regex [(?=\))]
+                        (1 keyword.control.arc)
+                        (2 variable.parameter.arc)))
+                (subzones
+                    (include @comment)
+                    (include @sexp)
+                    (include @illegal)))
+            (zone meta.declaration.variable.arc
+                (start
+                    (regex [(?<=\()(\=)\s([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*)\s*.*?]
+                        (1 keyword.control.arc)
+                        (2 variable.other.arc)))
+                (end
+                    (regex [(?=\))]
+                        (1 keyword.control.arc)
+                        (2 variable.other.arc)))
+                (subzones
+                    (include @comment)
+                    (include @sexp)
+                    (include @illegal)))
+            (include @quote-sexp)
+            (include @quote)
+            (include @language-functions)
+            (include @string)
+            (include @constants)
+            (zone constant.character.named.arc
+                (match
+                    (regex [(?<=[\(\s])(#\\)(space|newline|tab)(?=[\s\)])])))
+            (zone constant.character.hex-literal.arc
+                (match
+                    (regex [(?<=[\(\s])(#\\)x[0-9A-F]{2,4}(?=[\s\)])])))
+            (zone constant.character.escape.arc
+                (match
+                    (regex [(?<=[\(\s])(#\\).(?=[\s\)])])))
+            (zone punctuation.separator.cons.arc
+                (match
+                    (regex [(?<=[ ()])\.(?=[ ()])])))
+            (include @sexp)
+            (include @illegal))))
+
+(collection comment
+    (zone comment.line.semicolon.arc
+        (match
+            (regex [(;).*$\n?]
+                (1 punctuation.definition.comment.semicolon.arc)))))
+
+(collection constants
+    (zone constant.language.boolean.arc
+        (match
+            (regex [#[t|nil]])))
+    (zone constant.numeric.arc
+        (match
+            (regex [(?<=[\(\s])(#e|#i)?[0-9][0-9.]*])))
+    (zone constant.numeric.arc
+        (match
+            (regex [(?<=[\(\s])(#x)[0-9a-fA-F]+])))
+    (zone constant.numeric.arc
+        (match
+            (regex [(?<=[\(\s])(#o)[0-7]+])))
+    (zone constant.numeric.arc
+        (match
+            (regex [(?<=[\(\s])(#b)[01]+]))))

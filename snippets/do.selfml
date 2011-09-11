@@ -1,0 +1,9 @@
+(name do)
+
+(trigger
+    (tab do))
+
+(only-in source.arc)
+
+(snippet [(do %{1="action1"}
+    %{0})])

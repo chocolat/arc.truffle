@@ -1,0 +1,10 @@
+(name each)
+
+(trigger
+    (tab each))
+
+(only-in source.arc)
+
+(snippet [(each %{1="var"} %{2="list"}
+    %{0})
+])

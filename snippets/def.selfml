@@ -1,0 +1,10 @@
+(name def)
+
+(trigger
+    (tab def))
+
+(only-in source.arc)
+
+(snippet [(def %{1="procedure"} (%{2="args"}%{4=" . %{3="rest"}"})
+    %{0})
+])

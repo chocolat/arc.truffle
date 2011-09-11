@@ -1,0 +1,43 @@
+(detector
+    (extension arc))
+
+(folding
+    (start [^\(.*])
+    (stop [^\).*]))
+
+(in entity.name.function.arc
+    (symbol-list))
+
+(pair `[`
+    `]`
+    (smart-typing))
+
+(pair [(]
+    [)]
+    (smart-typing))
+
+(pair "
+    "
+    (smart-typing))
+
+(pair [{]
+    [}]
+    (smart-typing))
+
+(indentation.decrease [(?x)^ [ \t]*+
+	  (?<par>
+	    ( [^()\n]++ | \( \g<par> \) )*+
+	  )
+	  ( \) [ \t]*+ ) ++
+	$])
+
+(indentation.increase [(?x)^ [ \t]*+ \(
+	  (?<par>
+	    ( [^()\n]++ | \( \g<par> \)? )*+
+	  )
+	$])
+
+(shell-variables
+    (TM_COMMENT_START ;))
+
+(comment.line ;)

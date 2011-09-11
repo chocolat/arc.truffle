@@ -1,0 +1,9 @@
+(name when)
+
+(trigger
+    (tab when))
+
+(only-in source.arc)
+
+(snippet [(when %{1="condition"}
+      %{0})])

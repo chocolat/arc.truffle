@@ -1,0 +1,10 @@
+(name case)
+
+(trigger
+    (tab case))
+
+(only-in source.arc)
+
+(snippet [(case %{1="match"}
+    %{2="key"} %{3="value"}
+    %{4="default-value"})])

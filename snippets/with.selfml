@@ -1,0 +1,10 @@
+(name with)
+
+(trigger
+    (tab with))
+
+(only-in source.arc)
+
+(snippet [(with (%{1="var"} %{2="value"}
+       %{3="var"} %{4="value"})
+      %{5="body"})])

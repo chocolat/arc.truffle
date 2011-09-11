@@ -1,0 +1,41 @@
+(trigger
+    (key [[cmd]R]))
+
+(name Run)
+
+(only-in source.arc)
+
+(input selection document)
+
+(output html)
+
+(save nothing)
+
+(script [# $ cat `which arc`
+# cd /Users/aran/Projects/arc/arc2
+# ../MzScheme\ v352/bin/mzscheme -m -f as.scm
+
+# In ac.scm: 
+#
+# (define (ac s env)
+#   (cond ((string? s) (string-copy s))  ; to avoid immutable strings
+#         ((literal? s) s)
+#         ((eqv? s 'nil) (list 'quote 'nil))
+#         ((ssyntax? s) (ac (expand-ssyntax s) env))
+#         ((symbol? s) (ac-var-ref s env))
+#         ((ssyntax? (xcar s)) (ac (cons (expand-ssyntax (car s)) (cdr s)) env))
+#         ((eq? (xcar s) 'quote) (list 'quote (ac-niltree (cadr s))))
+#         ((eq? (xcar s) 'quasiquote) (ac-qq (cadr s) env))
+#         ((eq? (xcar s) 'if) (ac-if (cdr s) env))
+#         ((eq? (xcar s) 'fn) (ac-fn (cadr s) (cddr s) env))
+#         ((eq? (xcar s) 'set) (ac-set (cdr s) env))
+#         ; this line could be removed without changing semantics
+#         ((eq? (xcar (xcar s)) 'compose) (ac (decompose (cdar s) (cdr s)) env))
+#         ((pair? s) (ac-call (car s) (cdr s) env))
+#-------> ((eq? eof s) (exit))
+#         (#t (err "Bad object in expression" s))))
+
+
+echo "<pre>"
+arc
+echo "</pre>"])

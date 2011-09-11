@@ -1,0 +1,8 @@
+(name fn)
+
+(trigger
+    (tab fn))
+
+(only-in source.arc)
+
+(snippet [(fn (%{1="arg1"} %{2="arg2"}) (%{0}))])
